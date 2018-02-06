@@ -1,0 +1,12 @@
+C:\Users\User\UPproj>git log
+commit f168ce38d38d7b477407fa117b5aa7d0e195a0c3 (HEAD -> master)
+Author: Arina <arinarudevich@gmail.com>
+Date:   Tue Feb 6 16:49:54 2018 +0300
+
+    add status.txt
+
+commit 5566e8a2be4ed3340af3e21292e7675b94da480b
+Author: Arina <arinarudevich@gmail.com>
+Date:   Tue Feb 6 16:25:52 2018 +0300
+
+    add .gitignore
