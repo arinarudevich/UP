@@ -95,7 +95,8 @@ main{
 
   @media(max-width: 750px){
     .search{
-        display: none;
+        width: 80px;
+        font-size: 0.6em;
     }
 }
 
@@ -258,15 +259,6 @@ footer{
 @media(max-width: 400px){
     .headername{
         display: none;
-    }
-    #empty{
-        display: none;
-    }
-    .logout_block{
-        display: none;
-    }
-    .first_header_block{
-        justify-content: center;
     }
     #logo{
         width: 102.6px;
