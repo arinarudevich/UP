@@ -2,6 +2,7 @@ body{
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+    width: 100%;
     background-color:#FEF8E9;
     margin: 0;
     }
@@ -79,7 +80,7 @@ main{
 }
 
 .search{
-    width:auto;
+    width: auto;
     margin: 16px;
     border-radius: 16px;
     border-color: #5B1A04;
@@ -91,10 +92,25 @@ main{
 ::-webkit-input-placeholder { 
      color: #5B1A04;
   }
-
-  @media(max-width: 750px){
+  @media(max-width: 600px){
     .search{
-        width: 90px;
+        width: 100px;
+        margin: 16px 5px 5px 16px;
+        font-size: 0.6em;
+    }
+}
+
+  @media(max-width: 450px){
+    .search{
+        width: 85px;
+        margin: 15px 5px 5px 15px;
+        font-size: 0.6em;
+    }
+}
+  @media(max-width: 340px){
+    .search{
+        width: 80px;
+        margin: 16px 5px 5px 16px;
         font-size: 0.6em;
     }
 }
@@ -132,8 +148,8 @@ main{
 }
 
 .name{
-    width: 100%;
-    margin: 0 0 5px 50px;
+    width: 80%;
+    margin: 0 0 5px 0px;
     font-family: 'Advent Pro', cursive;
     color: #5B1A04;
 }
@@ -251,20 +267,11 @@ footer{
     color: rgb(141, 117, 69);
     margin: 0;
 }
-@media(max-width: 400px){
-    .headername{
-        display: none;
-    }
-    #logo{
-        width: 102.6px;
-        height: 73.2px;
-    }
-    header{
-        height: 90px;
-    }
+@media(max-width: 600px){
     .photopost{
         width: 315px;
         height: 220.5px;
+        margin: 35px;
     }
     .material-icons.md-36 { font-size: 20px; }
     .tool_button{
@@ -278,6 +285,25 @@ footer{
     }
     .date{
         font-size: 0.4em;
+    }
+
+}
+@media(max-width: 500px){
+    .headername{
+        display: none;
+    }
+    #logo{
+        width: 102.6px;
+        height: 73.2px;
+    }
+    header{
+        width: 100%;
+        height: 90px;
+    }
+ .photopost{
+        width: 315px;
+        height: 220.5px;
+        margin: 35px 0 35px 0;
     }
 }
 .log_in{
