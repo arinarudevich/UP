@@ -62,15 +62,7 @@ let photoPosts = [
         hashTags: ['hashtag1', 'hashtag2', 'pampam'],
         likes: ['arina', 'someguy']
     },
-    /*{
-        id: '8',
-        description: 'love his hat',
-        createdAt: new Date('2018-02-13T23:00:00'),
-        author: 'arinarudevich',
-        photoLink: 'http://cmzone.vzbqbxhynotw9ion96xv.netdna-cdn.com/wp-content/uploads/2015/10/duckbootsmoonrisekingdom1.jpg',
-        hashTags: ['hashtag2'],
-        likes: ['arina', 'someguy']
-    },*/
+    
     {
         id: '9',
         description: 'nice',
@@ -108,6 +100,12 @@ let photoPosts = [
         likes: ['arina', 'someguy']
     }
 ];
+photoPosts.sort(compareDates);
+
+function compareDates(a, b) {
+    return b.createdAt - a.createdAt;
+}
+
 let module = (function () {
     let currPostAmount = 0;
 
@@ -135,6 +133,7 @@ let module = (function () {
                     return element.id !== photoPost.id;
                 })) {
                     photoPosts.push(photoPost);
+                    photoPosts.sort(compareDates);
                     moduledom.createPhotopost(photoPost, true);
                     return true;
                 }
@@ -153,12 +152,24 @@ let module = (function () {
             if (photoPosts.some(function (element) {
                 return element.id === someid;
             })) {
-                photoPosts.splice(photoPosts.findIndex(function (element) {
-                    return element.id === someid;
-                }), 1);
-                moduledom.deletePhotopost(someid);
-                module.currentPostAmount = module.currentPostAmount - 1;
-                module.getPhotoPosts(this.currentPostAmount, 1);
+
+                if (photoPosts.slice(0, this.currentPostAmount).some(function (item) {
+                    return item.id === someid;
+                })) {
+                    photoPosts.splice(photoPosts.findIndex(function (element) {
+                        return element.id === someid;
+                    }), 1);
+                    moduledom.deletePhotopost(someid);
+                    module.currentPostAmount = module.currentPostAmount - 1;
+                    module.getPhotoPosts(this.currentPostAmount, 1);
+                }
+                else {
+                    photoPosts.splice(photoPosts.findIndex(function (element) {
+                        return element.id === someid;
+                    }), 1);
+                }
+                
+
                 return true;
             }
             else return false;
@@ -184,7 +195,6 @@ let module = (function () {
                     return element !== photoPost.likes;
                 })) {
                     newPhPost.likes.push(photoPost.likes);
-
                 }
                 if (module.validatePhotoPost(newPhPost)) {
                     photoPosts[index] = newPhPost;
@@ -200,33 +210,13 @@ let module = (function () {
             skip = skip || 0;
             top = top || 10;
             filterConfig = filterConfig || {};
+           
             if (typeof skip !== 'number' || typeof top !== 'number' || typeof filterConfig !== 'object') {
                 console.log('Invalid arguments');
             }
 
-            function compareDates(a, b) {
-                return b.createdAt - a.createdAt;
-            }
-            function authorFilter(element) {
-                if (element.author === filterConfig.author) {
-                    return element;
-                }
-            }
-            function hashtagFilter(element) {
-                if (element.hashTags.some(function (tag) {
-                    return tag === filterConfig.hashTags;
-                })) {
-                    return element;
-                }
-            }
-            function dateFilter(element) {
-                if (element.createdAt > filterConfig.createdAt) {
-                    return element;
-                }
-            }
 
-            let newPhPosts = photoPosts.sort(compareDates);
-            newPhPosts = photoPosts.slice(skip);
+            let newPhPosts = photoPosts.slice(skip);
 
             if (filterConfig.hasOwnProperty('author')) {
                 newPhPosts = newPhPosts.filter(authorFilter);
@@ -250,61 +240,48 @@ let module = (function () {
             }
             let ph = newPhPosts.slice(0, top);
 
-            if (Object.keys(filterConfig).length === 0 && skip !== 0) {
-                ph.forEach(function (item) {
+            photoPosts.forEach(function (item) {
+                if (ph.some(function (element) {
+                    return element.id === item.id;
+                })) {
                     moduledom.createPhotopost(item);
-                });
-            }
-            else {
-                photoPosts.forEach(function (item) {
-                    moduledom.deletePhotopost(item.id);
-                });
+                }
 
-
-                ph.forEach(function (item) {
-                    moduledom.createPhotopost(item);
-                });
-            }
+            });
+           
             return newPhPosts.slice(0, top);
         }
     }
+    function compareDates(a, b) {
+        return b.createdAt - a.createdAt;
+    }
+    function authorFilter(element) {
+        if (element.author === filterConfig.author) {
+            return element;
+        }
+    }
+    function hashtagFilter(element) {
+        if (element.hashTags.some(function (tag) {
+            return tag === filterConfig.hashTags;
+        })) {
+            return element;
+        }
+    }
+    function dateFilter(element) {
+        if (element.createdAt > filterConfig.createdAt) {
+            return element;
+        }
+    }
+
 }());
-
-/* tests
-console.log("get photoposts");
-console.log(module.getPhotoPosts());
-console.log("get 5 photo posts from 3d");
-console.log(module.getPhotoPosts(3, 5));
-console.log("get photo posts with author 'arina'");
-console.log(module.getPhotoPosts(0, 5, { author: 'arina' }));
-console.log("get 10 photo posts created after date 2013-02-13T23:00:00 with author 'arinarudevich' and with 'hashtag1'");
-console.log(module.getPhotoPosts(0, 10, { author: 'arinarudevich', createdAt: new Date('2013-02-13T23:00:00'), hashTags: 'hashtag1' }));
-console.log("get photo post with id 4");
-console.log(module.getPhotoPost('4'));
-console.log("add new photo post and check data");
-console.log(module.addPhotoPost({
-    id: '11',
-    description: '',
-    createdAt: new Date('2018-02-23T23:00:00'),
-    author: '',
-    photoLink: 'http://ont.by/webroot/delivery/files/news/2018/02/22/Dom.jpg',
-}));
-console.log(module.addPhotoPost({
-    id: '11',
-    description: 'blablabla',
-    createdAt: new Date('2018-02-23T23:00:00'),
-    author: 'arina',
-    photoLink: 'whatthefuck',
-}));
-console.log(module.getPhotoPosts());
-console.log("remove photo post with id 11");
-console.log(module.removePhotoPost('11'));
-console.log(module.getPhotoPosts());
-console.log("edit photo post with id 6 and 8")
-console.log(module.editPhotoPost('6', { photoLink: 'lala', description: '', hashTags: ['whaat'] }));
-console.log(module.getPhotoPosts());
-console.log(module.editPhotoPost('8', { photoLink: 'http://haradok.info/static/news/5/4565/preview.jpg', description: 'lalalal', hashTags: ['whaat'] }));
-console.log(module.getPhotoPosts());
-
-*/
-
+module.getPhotoPosts(0, 10);
+    //object for adding from console
+/*{
+        id: '8',
+        description: 'love his hat',
+        createdAt: new Date('2018-02-13T23:00:00'),
+        author: 'arinarudevich',
+        photoLink: 'http://cmzone.vzbqbxhynotw9ion96xv.netdna-cdn.com/wp-content/uploads/2015/10/duckbootsmoonrisekingdom1.jpg',
+        hashTags: ['hashtag2'],
+        likes: ['arina', 'someguy']
+    },*/

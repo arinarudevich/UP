@@ -1,3 +1,4 @@
+//add function works only for registered users, what makes perfect sense :)
 
 let moduledom = (function () {
     let username = null;
@@ -120,4 +121,3 @@ let moduledom = (function () {
     }
 })();
 moduledom.dependOnUser(moduledom.user);
-module.getPhotoPosts(0, 10);
