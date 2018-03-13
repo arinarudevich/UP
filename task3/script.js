@@ -62,7 +62,7 @@ let photoPosts = [
         hashTags: ['hashtag1', 'hashtag2', 'pampam'],
         likes: ['arina', 'someguy']
     },
-    
+
     {
         id: '9',
         description: 'nice',
@@ -107,10 +107,10 @@ function compareDates(a, b) {
 }
 
 let module = (function () {
-    let currPostAmount = 0;
-
+    function compareDates(a, b) {
+        return b.createdAt - a.createdAt;
+    }
     return {
-        currentPostAmount: currPostAmount,
 
         validatePhotoPost: function (photoPost) {
             if (photoPost.id === '' || typeof photoPost.id !== 'string')
@@ -134,46 +134,31 @@ let module = (function () {
                 })) {
                     photoPosts.push(photoPost);
                     photoPosts.sort(compareDates);
-                    moduledom.createPhotopost(photoPost, true);
                     return true;
                 }
                 else return false;
             }
             else return false;
         },
+
         getPhotoPost: function (someid) {
-            let ph = photoPosts.find(function (element) {
+            return photoPosts.find(function (element) {
                 return element.id === someid;
             });
-            moduledom.createPhotopost(ph);
-            return ph;
         },
+
         removePhotoPost: function (someid) {
             if (photoPosts.some(function (element) {
                 return element.id === someid;
             })) {
-
-                if (photoPosts.slice(0, this.currentPostAmount).some(function (item) {
-                    return item.id === someid;
-                })) {
-                    photoPosts.splice(photoPosts.findIndex(function (element) {
-                        return element.id === someid;
-                    }), 1);
-                    moduledom.deletePhotopost(someid);
-                    module.currentPostAmount = module.currentPostAmount - 1;
-                    module.getPhotoPosts(this.currentPostAmount, 1);
-                }
-                else {
-                    photoPosts.splice(photoPosts.findIndex(function (element) {
-                        return element.id === someid;
-                    }), 1);
-                }
-                
-
+                photoPosts.splice(photoPosts.findIndex(function (element) {
+                    return element.id === someid;
+                }), 1);
                 return true;
             }
             else return false;
         },
+
         editPhotoPost: function (someid, photoPost) {
             if (photoPosts.some(function (element) {
                 return element.id === someid;
@@ -189,17 +174,15 @@ let module = (function () {
                     newPhPost.photoLink = photoPost.photoLink;
                 }
                 if (photoPost.hasOwnProperty('hashTags')) {
-                    newPhPost.hashTags = photoPost.hashTags;
+                    newPhPost.hashTags.push(photoPost.hashTags);
                 }
                 if (photoPost.hasOwnProperty('likes') && newPhPost.likes.some(function (element) {
                     return element !== photoPost.likes;
                 })) {
                     newPhPost.likes.push(photoPost.likes);
                 }
-                if (module.validatePhotoPost(newPhPost)) {
+                if (this.validatePhotoPost(newPhPost)) {
                     photoPosts[index] = newPhPost;
-                    moduledom.deletePhotopost(photoPosts[index].id);
-                    moduledom.createPhotopost(photoPosts[index], true);
                     return true;
                 }
                 else return false;
@@ -210,71 +193,57 @@ let module = (function () {
             skip = skip || 0;
             top = top || 10;
             filterConfig = filterConfig || {};
-           
-            if (typeof skip !== 'number' || typeof top !== 'number' || typeof filterConfig !== 'object') {
+
+            if (typeof skip === 'number' || typeof top === 'number' || typeof filterConfig === 'object') {
+                if (arguments.length < 3) {
+                    return photoPosts.slice(skip, skip + top);
+                }
+                else {
+                    let newPhPosts = photoPosts.slice();
+
+                    if (filterConfig.hasOwnProperty('author')) {
+                        newPhPosts = newPhPosts.filter(function (element) {
+                            if (element.author === filterConfig.author) {
+                                return element;
+                            }
+                        });
+                        if (newPhPosts.length === 0) {
+                            console.log("There are no posts with such author.")
+                        }
+                    }
+                    if (filterConfig.hasOwnProperty('createdAt')) {
+                        newPhPosts = newPhPosts.filter(function (element) {
+                            if (element.createdAt > filterConfig.createdAt) {
+                                return element;
+                            }
+                        });
+                        if (newPhPosts.length === 0) {
+                            console.log("There are no posts created after this date.")
+                        }
+                    }
+                    if (filterConfig.hasOwnProperty('hashTags')) {
+                        newPhPosts = newPhPosts.filter(function (element) {
+                            if (element.hashTags.some(function (tag) {
+                                return tag === filterConfig.hashTags;
+                            })) {
+                                return element;
+                            }
+                        });
+                        if (newPhPosts.length === 0) {
+                            console.log("There are no posts with such hashtag.")
+                        }
+
+                    }
+                    return newPhPosts.slice(skip, skip + top);
+                }
+            }
+            else {
                 console.log('Invalid arguments');
+                return null;
             }
-
-
-            let newPhPosts = photoPosts.slice(skip);
-
-            if (filterConfig.hasOwnProperty('author')) {
-                newPhPosts = newPhPosts.filter(authorFilter);
-                if (newPhPosts.length === 0) {
-                    console.log("There are no posts with such author.")
-                }
-            }
-            if (filterConfig.hasOwnProperty('createdAt')) {
-                newPhPosts = newPhPosts.filter(dateFilter);
-                if (newPhPosts.length === 0) {
-                    console.log("There are no posts created after this date.")
-                }
-
-            }
-            if (filterConfig.hasOwnProperty('hashTags')) {
-                newPhPosts = newPhPosts.filter(hashtagFilter);
-                if (newPhPosts.length === 0) {
-                    console.log("There are no posts with such hashtag.")
-                }
-
-            }
-            let ph = newPhPosts.slice(0, top);
-
-            photoPosts.forEach(function (item) {
-                if (ph.some(function (element) {
-                    return element.id === item.id;
-                })) {
-                    moduledom.createPhotopost(item);
-                }
-
-            });
-           
-            return newPhPosts.slice(0, top);
         }
     }
-    function compareDates(a, b) {
-        return b.createdAt - a.createdAt;
-    }
-    function authorFilter(element) {
-        if (element.author === filterConfig.author) {
-            return element;
-        }
-    }
-    function hashtagFilter(element) {
-        if (element.hashTags.some(function (tag) {
-            return tag === filterConfig.hashTags;
-        })) {
-            return element;
-        }
-    }
-    function dateFilter(element) {
-        if (element.createdAt > filterConfig.createdAt) {
-            return element;
-        }
-    }
-
 }());
-module.getPhotoPosts(0, 10);
     //object for adding from console
 /*{
         id: '8',
