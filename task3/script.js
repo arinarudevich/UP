@@ -176,7 +176,7 @@ let module = (function () {
                 if (photoPost.hasOwnProperty('hashTags')) {
                     newPhPost.hashTags.push(photoPost.hashTags);
                 }
-                if (photoPost.hasOwnProperty('likes') && newPhPost.likes.some(function (element) {
+                if (photoPost.hasOwnProperty('likes') && newPhPost.likes.every(function (element) {
                     return element !== photoPost.likes;
                 })) {
                     newPhPost.likes.push(photoPost.likes);
