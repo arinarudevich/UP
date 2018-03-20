@@ -1,6 +1,6 @@
 
 const moduledom = (function () {
-    let username = "me"
+    let username = "arinarudevich"
     let currPostAmount = 0;
    
 
@@ -76,7 +76,8 @@ const moduledom = (function () {
                 let editButton = document.createElement('button');
                 editButton.className = 'tool_button';
                 editButton.setAttribute('data-action', 'edit');
-                if (typeof moduledom.user === 'string' && moduledom.user !== null) {
+                if (typeof moduledom.user === 'string' && moduledom.user !== null
+                    && moduledom.user === post.author) {
                     editButton.innerHTML = '<i class="material-icons md-36 yellow1">edit</i>';
                 }
                 toolbar.childNodes[2].appendChild(editButton);
@@ -84,7 +85,8 @@ const moduledom = (function () {
                 let deleteButton = document.createElement('button');
                 deleteButton.className = 'tool_button';
                 deleteButton.setAttribute('data-action', 'delete');
-                if (typeof moduledom.user === 'string' && moduledom.user !== null) {
+                if (typeof moduledom.user === 'string' && moduledom.user !== null
+                    && moduledom.user === post.author) {
                     deleteButton.innerHTML = '<i class="material-icons md-36 yellow1">delete</i>';
                 }
                 toolbar.childNodes[2].appendChild(deleteButton);
