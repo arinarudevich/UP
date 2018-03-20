@@ -1,7 +1,8 @@
 
-let moduledom = (function () {
-    let username = 'arinarudevich';
+const moduledom = (function () {
+    let username = "me"
     let currPostAmount = 0;
+   
 
     return {
         currentPostAmount: currPostAmount,
@@ -41,12 +42,12 @@ let moduledom = (function () {
                 document.getElementById(post.id).appendChild(image);
                 document.getElementById(post.id).appendChild(toolbar);
 
-                let favotite = document.createElement('button');
-                favotite.className = 'tool_button';
-                if (typeof moduledom.user === 'string' && moduledom.user !== null) {
-                    favotite.innerHTML = ' <i class="material-icons md-36 yellow1">favorite_border</i>';
-                }
-                photopost.childNodes[2].appendChild(favotite);
+                let favorite = document.createElement('button');
+                favorite.className = 'tool_button';
+                favorite.setAttribute('data-action', 'like');
+
+                this.toLike(post.id, favorite);
+                    photopost.childNodes[2].appendChild(favorite);
 
                 let ph_info = document.createElement('div');
                 ph_info.className = 'ph_info';
@@ -74,6 +75,7 @@ let moduledom = (function () {
 
                 let editButton = document.createElement('button');
                 editButton.className = 'tool_button';
+                editButton.setAttribute('data-action', 'edit');
                 if (typeof moduledom.user === 'string' && moduledom.user !== null) {
                     editButton.innerHTML = '<i class="material-icons md-36 yellow1">edit</i>';
                 }
@@ -81,6 +83,7 @@ let moduledom = (function () {
 
                 let deleteButton = document.createElement('button');
                 deleteButton.className = 'tool_button';
+                deleteButton.setAttribute('data-action', 'delete');
                 if (typeof moduledom.user === 'string' && moduledom.user !== null) {
                     deleteButton.innerHTML = '<i class="material-icons md-36 yellow1">delete</i>';
                 }
@@ -90,6 +93,25 @@ let moduledom = (function () {
             else {
                 console.log('Invalid arguments.');
             }
+        },
+        toLike: function (someid, favorite) {
+            if (typeof moduledom.user === 'string' && moduledom.user !== null) {
+                let index = module.array.findIndex(function (element) {
+                    return element.id === someid;
+                });
+                if (module.array[index].likes.every(function (element) {
+                    return element !== moduledom.user;
+                })) {
+                    
+                    favorite.innerHTML = ' <i class="material-icons md-36 yellow1">favorite_border</i>';
+                }
+                else {
+                   
+                    favorite.innerHTML = ' <i class="material-icons md-36 blue">favorite</i>'
+                }
+                return true;
+            }
+            else return false;
         },
         deletePhotopost: function (someid) {
             if (typeof someid === 'string') {
@@ -103,14 +125,60 @@ let moduledom = (function () {
                 console.log('Invalid arguments.');
             }
         },
+        createShowButton: function () {
+            let showButton = document.createElement('button');
+            showButton.className = 'show_button';
+            showButton.id = 'show';
+            showButton.innerHTML = ' <i class="material-icons">&#xE5CF</i>show more';
+            document.getElementsByTagName('main')[0].appendChild(showButton);
 
+        },
+        createAddButton: function () {
+            let addButton = document.createElement('button');
+            addButton.className = 'add_button';
+            addButton.innerHTML = '&#10010 add photo post';
+            document.getElementsByTagName('main')[0].insertBefore(addButton, document.getElementById('show'));
+
+
+        },
+        createFilter: function() {
+            let searchBlock = document.createElement('form');
+            searchBlock.className = "search_block";
+            searchBlock.name = "search";
+            document.getElementsByTagName('main')[0].appendChild(searchBlock);
+
+            let nameSearch = document.createElement('input');
+            nameSearch.className = "search";
+            nameSearch.placeholder = " Search by name..";
+            nameSearch.name = "nameFilter";
+            document.getElementsByClassName('search_block')[0].appendChild(nameSearch);
+
+            let dateSearch = document.createElement('input');
+            dateSearch.className = "search";
+            dateSearch.type = "date";
+            dateSearch.name = "dateFilter";
+            document.getElementsByClassName('search_block')[0].appendChild(dateSearch);
+
+            let hashSearch = document.createElement('input');
+            hashSearch.className = "search";
+            hashSearch.placeholder = " Search by hashtag..";
+            hashSearch.name = "hashFilter";
+            document.getElementsByClassName('search_block')[0].appendChild(hashSearch);
+
+            let filter = document.createElement('button');
+            filter.className = "filter_button";
+
+            filter.innerHTML = ' <i class="material-icons md-24 red1">done</i>';
+
+            document.getElementsByClassName('search_block')[0].appendChild(filter);
+
+        },
         dependOnUser: function (user) {
             if (typeof user === 'string' && user !== null) {
-                let addButton = document.createElement('button');
-                addButton.className = 'add_button';
-                addButton.innerHTML = '&#10010 add photo post';
-                document.getElementsByTagName('main')[0].insertBefore(addButton, document.getElementById('show'));
-
+                this.createFilter();
+                this.createAddButton();
+                this.createShowButton();
+                document.getElementsByClassName("logout_block")[0].innerHTML = "";
                 let username = document.createElement('p');
                 username.className = 'username';
                 username.innerHTML = moduledom.user;
@@ -120,12 +188,18 @@ let moduledom = (function () {
                 logoutButton.className = 'logout_button';
                 logoutButton.innerHTML = '<i id="logout_icon" class="material-icons  md-36 red1">person_outline</i>';
                 document.getElementsByClassName('logout_block')[0].appendChild(logoutButton);
+                return true;
             }
+
             else {
+                this.createFilter();
+                this.createShowButton();
+                document.getElementsByClassName("logout_block")[0].innerHTML = "";
                 let sign = document.createElement('div');
                 sign.className = 'sign';
                 sign.innerHTML = '<button class="signup_button">sign up</button>';
                 document.getElementsByClassName('logout_block')[0].appendChild(sign);
+                return false;
             }
         },
         removePhotopost: function (someid) {
@@ -134,18 +208,15 @@ let moduledom = (function () {
                 this.loadPhotoposts(this.currentPostAmount, 1);
                 this.currentPostAmount++;
                 return true;
-            }    
+            }
             else return false;
         },
 
         editPhotopost: function (someid, photoPost) {
             if (module.editPhotoPost(someid, photoPost)) {
-                moduledom.deletePhotopost(someid);
                 let index = photoPosts.findIndex(function (element) {
                     return element.id === someid;
                 });
-                let newPhPost = Object.assign({}, photoPosts[index]);
-                moduledom.createPhotopost(newPhPost, true);
                 return true;
             }
             else return false;
@@ -177,13 +248,23 @@ let moduledom = (function () {
                         moduledom.deletePhotopost(item.id);
                     });
                     filtered.forEach(function (item) {
-                            moduledom.createPhotopost(item);
-                    });    
+                        moduledom.createPhotopost(item);
+                    });
+                }
+                if (moduledom.currentPostAmount === module.array.length) {
+                    let showButton = document.getElementById('show');
+                    showButton.innerHTML = "";
                 }
                 return true;
             }
             else return false;
-        }    
+            
+        },
+        clearMain: function () {
+            let main = document.getElementsByTagName("main")[0];
+            main.innerHTML = "";
+            moduledom.currentPostAmount = 0;
+        }
     }
 })();
 moduledom.dependOnUser(moduledom.user);
