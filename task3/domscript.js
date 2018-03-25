@@ -1,8 +1,8 @@
 
 const moduledom = (function () {
-    let username = "arinarudevich"
+    let username = JSON.parse(localStorage.getItem("user")) || null;
+
     let currPostAmount = 0;
-   
 
     return {
         currentPostAmount: currPostAmount,
@@ -47,7 +47,7 @@ const moduledom = (function () {
                 favorite.setAttribute('data-action', 'like');
 
                 this.toLike(post.id, favorite);
-                    photopost.childNodes[2].appendChild(favorite);
+                photopost.childNodes[2].appendChild(favorite);
 
                 let ph_info = document.createElement('div');
                 ph_info.className = 'ph_info';
@@ -79,6 +79,8 @@ const moduledom = (function () {
                 if (typeof moduledom.user === 'string' && moduledom.user !== null
                     && moduledom.user === post.author) {
                     editButton.innerHTML = '<i class="material-icons md-36 yellow1">edit</i>';
+                } else {
+                    editButton.setAttribute("disable", true);
                 }
                 toolbar.childNodes[2].appendChild(editButton);
 
@@ -88,6 +90,8 @@ const moduledom = (function () {
                 if (typeof moduledom.user === 'string' && moduledom.user !== null
                     && moduledom.user === post.author) {
                     deleteButton.innerHTML = '<i class="material-icons md-36 yellow1">delete</i>';
+                } else {
+                    deleteButton.setAttribute("disable", true);
                 }
                 toolbar.childNodes[2].appendChild(deleteButton);
                 this.currentPostAmount++;
@@ -97,23 +101,29 @@ const moduledom = (function () {
             }
         },
         toLike: function (someid, favorite) {
+            let photoPosts = LS.getPostsFromLS();
+            let index = photoPosts.findIndex(function (element) {
+                return element.id === someid;
+            });
             if (typeof moduledom.user === 'string' && moduledom.user !== null) {
-                let index = module.array.findIndex(function (element) {
-                    return element.id === someid;
-                });
-                if (module.array[index].likes.every(function (element) {
+                if (photoPosts[index].likes.every(function (element) {
                     return element !== moduledom.user;
                 })) {
-                    
-                    favorite.innerHTML = ' <i class="material-icons md-36 yellow1">favorite_border</i>';
+                    favorite.innerHTML = '<i class="material-icons md-36 yellow1">favorite_border</i>';
+                    favorite.title = photoPosts[index].likes;
                 }
                 else {
-                   
-                    favorite.innerHTML = ' <i class="material-icons md-36 blue">favorite</i>'
+                    favorite.innerHTML = '<i class="material-icons md-36 blue">favorite</i>';
+                    favorite.title = photoPosts[index].likes;
+
                 }
                 return true;
+
+            } else {
+                favorite.innerHTML = '<i class="material-icons md-36 yellow1">favorite_border</i>';
+                favorite.setAttribute("disabled", true);
+                favorite.title = photoPosts[index].likes;
             }
-            else return false;
         },
         deletePhotopost: function (someid) {
             if (typeof someid === 'string') {
@@ -140,10 +150,8 @@ const moduledom = (function () {
             addButton.className = 'add_button';
             addButton.innerHTML = '&#10010 add photo post';
             document.getElementsByTagName('main')[0].insertBefore(addButton, document.getElementById('show'));
-
-
         },
-        createFilter: function() {
+        createFilter: function () {
             let searchBlock = document.createElement('form');
             searchBlock.className = "search_block";
             searchBlock.name = "search";
@@ -158,6 +166,7 @@ const moduledom = (function () {
             let dateSearch = document.createElement('input');
             dateSearch.className = "search";
             dateSearch.type = "date";
+            dateSearch.placeholder = "DD/MM/YY";
             dateSearch.name = "dateFilter";
             document.getElementsByClassName('search_block')[0].appendChild(dateSearch);
 
@@ -167,12 +176,51 @@ const moduledom = (function () {
             hashSearch.name = "hashFilter";
             document.getElementsByClassName('search_block')[0].appendChild(hashSearch);
 
+            let filterBlock = document.createElement('div');
+            filterBlock.className = "filter_block";
+            document.getElementsByClassName('search_block')[0].appendChild(filterBlock);
+
             let filter = document.createElement('button');
             filter.className = "filter_button";
+            filter.title = "filter posts";
+            filter.innerHTML = '<i class="material-icons md-24 red1">search</i>';
+            document.getElementsByClassName('filter_block')[0].appendChild(filter);
 
-            filter.innerHTML = ' <i class="material-icons md-24 red1">done</i>';
+            let filterErase = document.createElement('button');
+            filterErase.className = "filter_button";
+            filterErase.title = "erase filter";
+            filterErase.innerHTML = '<i class="material-icons md-24 red1">clear</i>';
+            document.getElementsByClassName('filter_block')[0].appendChild(filterErase);
 
-            document.getElementsByClassName('search_block')[0].appendChild(filter);
+
+        },
+        createDeleteBox: function () {
+            let popup = document.createElement('div');
+            popup.className = "popup";
+            document.getElementsByTagName('main')[0].appendChild(popup);
+
+            let box = document.createElement('div');
+            box.className = "delete_box";
+            box.innerText = 'Sure you want to delete this photo post?';
+            document.getElementsByClassName("popup")[0].appendChild(box);
+
+            let confirm = document.createElement('div');
+            confirm.className = "confirm";
+            document.getElementsByClassName('delete_box')[0].appendChild(confirm);
+
+            let yesButton = document.createElement('button');
+            yesButton.className = "confirm_button";
+            yesButton.id = "yes";
+            yesButton.innerHTML = '<i class="material-icons md-36 red1">done</i>';
+            document.getElementsByClassName('confirm')[0].appendChild(yesButton);
+
+            let noButton = document.createElement('button');
+            noButton.className = "confirm_button";
+            noButton.id = "no";
+            noButton.innerHTML = '<i class="material-icons md-36 red1">clear</i>';
+            document.getElementsByClassName('confirm')[0].appendChild(noButton);
+
+
 
         },
         dependOnUser: function (user) {
@@ -180,6 +228,7 @@ const moduledom = (function () {
                 this.createFilter();
                 this.createAddButton();
                 this.createShowButton();
+                this.createDeleteBox();
                 document.getElementsByClassName("logout_block")[0].innerHTML = "";
                 let username = document.createElement('p');
                 username.className = 'username';
@@ -189,17 +238,19 @@ const moduledom = (function () {
                 let logoutButton = document.createElement('button');
                 logoutButton.className = 'logout_button';
                 logoutButton.innerHTML = '<i id="logout_icon" class="material-icons  md-36 red1">person_outline</i>';
+                logoutButton.title = "log out";
                 document.getElementsByClassName('logout_block')[0].appendChild(logoutButton);
                 return true;
             }
 
             else {
+                this.createDeleteBox();
                 this.createFilter();
                 this.createShowButton();
                 document.getElementsByClassName("logout_block")[0].innerHTML = "";
                 let sign = document.createElement('div');
                 sign.className = 'sign';
-                sign.innerHTML = '<button class="signup_button">sign up</button>';
+                sign.innerHTML = '<button class="signup_button">sign in</button>';
                 document.getElementsByClassName('logout_block')[0].appendChild(sign);
                 return false;
             }
@@ -215,6 +266,7 @@ const moduledom = (function () {
         },
 
         editPhotopost: function (someid, photoPost) {
+            let photoPosts = LS.getPostsFromLS();
             if (module.editPhotoPost(someid, photoPost)) {
                 let index = photoPosts.findIndex(function (element) {
                     return element.id === someid;
@@ -234,6 +286,7 @@ const moduledom = (function () {
 
         loadPhotoposts: function (skip, top, filterConfig) {
             let filtered = module.getPhotoPosts(skip, top, filterConfig);
+            let photoPosts = LS.getPostsFromLS();
             if (filtered) {
                 if (arguments.length < 3) {
                     photoPosts.forEach(function (item) {
@@ -253,14 +306,14 @@ const moduledom = (function () {
                         moduledom.createPhotopost(item);
                     });
                 }
-                if (moduledom.currentPostAmount === module.array.length) {
+                if (moduledom.currentPostAmount === photoPosts.length) {
                     let showButton = document.getElementById('show');
                     showButton.innerHTML = "";
                 }
                 return true;
             }
             else return false;
-            
+
         },
         clearMain: function () {
             let main = document.getElementsByTagName("main")[0];
