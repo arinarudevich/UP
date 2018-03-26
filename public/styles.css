@@ -1,0 +1,427 @@
+*{
+    outline:none;
+}
+
+html{
+    display: flex;
+    height: 100%;
+}
+body{
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    background-color:#FEF8E9;
+    margin: 0;
+    }
+
+header{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    height: 150px;
+    border-bottom: 0.5px dashed;
+    border-bottom-color: #B2A684;
+    background-color: #DEEEEF;
+}
+.first_header_block{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+}
+.home_button{
+    display: flex;
+    width: 130px !important;  
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    cursor: pointer; 
+    align-items: flex-start;
+    color: #5B1A04;
+}
+
+#home{
+    margin: 10px;
+    font-size: 40px;
+}
+.home_button:hover{
+    color: #FEC63D;
+}
+
+.logout_block{
+    display: flex;
+    width: 130px;
+    justify-content: flex-end;
+}
+.headername_block{
+    display: flex;
+    justify-content: space-between;
+}
+
+#logo{
+    width: 128.25px;
+    height: 91.5px;
+    margin: 10px;
+    margin-bottom: 0;
+}
+
+.headername{
+    display: block;
+    justify-content: space-between;
+    margin: 0;
+    background-color:  rgba(0, 0, 0, 0);
+    color: #FEC63D;
+    font-size: 3.2em;
+    font-family: 'Arizonia', cursive;
+}
+
+.logout_button{
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    cursor: pointer; 
+}
+#logout_icon:hover{
+    color: #FEC63D;
+}
+.logout_button:active{
+    color: #FEC63D;
+}
+.username{
+    right: 45px;
+    color: #5B1A04;
+    font-family: 'Advent Pro', cursive;
+    text-align: right;
+}
+.signup_button{
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    cursor: pointer; 
+    margin: 10px;
+    right: 45px;
+    color: #5B1A04;
+    font-family: 'Advent Pro', cursive;
+    font-size: 1.5em;
+    text-align: right;
+}
+.signup_button:hover{
+    color: #FEC63D;
+}
+.signup_button:active{
+    color: #FEC63D;
+}
+
+
+main{
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 100%;
+    padding-bottom: 128px;
+}
+.delete_box{
+    align-self: center;
+    top: 40%;
+    left: 50%;
+    right: 50%;
+    width: 200px;
+    padding: 50px;
+    background-color: #FDF9ED;
+    border-radius: 50px;
+    box-shadow: 0px 0px 10px #000;
+    font-family: 'Advent Pro', cursive;
+    font-size: 1.2em;
+    color: #9B7260;
+    text-align: center;
+    
+}
+
+.popup{
+    width:100%;
+    height: 100%;
+    top: 0px;
+    background-color: rgba(0,0,0,0.5);
+    overflow:hidden;
+    position:fixed;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.confirm_button{
+    margin: 10px;
+    margin-bottom: 0px;
+}
+.search_block{
+    display: flex;
+}
+.search{
+    width: 200px;
+    height: 20px;
+    margin: 16px;
+    padding: 5px;
+    border-radius: 16px;
+    border-color: #5B1A04;
+    border-width: 0.8px;
+    font-family: 'Advent Pro', cursive;
+    color: #5B1A04;
+    background-color: #F9F8F7;
+}
+.filter_block{
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+}
+.filter_button,.confirm_button{
+    padding: 0;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    color: #5B1A04;
+    cursor: pointer;
+}
+
+
+::-webkit-input-placeholder { 
+     color: #5B1A04;
+  }
+  @media(max-width: 800px){
+    .search{
+        width: 100px;
+        margin: 16px 5px 5px 16px;
+        font-size: 0.6em;
+    }
+}
+
+  @media(max-width: 450px){
+    .search{
+        width: 85px;
+        margin: 15px 5px 5px 15px;
+        font-size: 0.6em;
+    }
+}
+  @media(max-width: 360px){
+    .search{
+        width: 70px;
+        margin: 16px 5px 5px 16px;
+        font-size: 0.6em;
+    }
+}
+
+.add_button{
+    display: flex;
+    margin: 24px;
+    margin-bottom: 0;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 1.5em;
+    font-family: 'Advent Pro', cursive;
+    color: #5B1A04;
+    cursor: pointer;
+}
+.add_button:hover{
+    color: #FEC63D;
+}
+.add_button:active{
+    color: #FEC63D;
+}
+
+.photopost{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 500px;
+    height: auto;
+    border: 2px dashed #5B1A04;
+    border-radius: 45px;
+    margin: 45px;
+    background-color: #F9F8F7;
+}
+
+.name{
+    width: 80%;
+    margin: 0 0 5px 0px;
+    font-family: 'Advent Pro', cursive;
+    color: #5B1A04;
+}
+.image{
+    flex: 1 0 auto;
+    width: auto;
+    max-width: 96%;
+    border-radius: 30px;
+}
+.toolbar{
+    width: 100%;
+    margin: 0 15px 5px 15px;
+    display: flex;
+    justify-content: space-between;
+}
+.ph_info{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex: 1 0 auto;
+}
+.description{
+    height: 30px;
+    width: 350px;
+    margin: 5px 0 0 5px;
+    font-family: 'Advent Pro', cursive;
+    font-size: 1em;
+    color: #7B5A19;  
+    overflow-y: auto;
+    scroll-behavior: smooth;
+
+}
+.hashtags{
+    margin: 0 0 0 5px;
+    font-family: 'Advent Pro', cursive;
+    font-size: 0.8em;
+    color: #7B5A19;  
+}
+.ph_date{
+    margin: 0 0 0 5px;
+    font-family: 'Advent Pro', cursive;
+    font-size: 0.7em;
+    color: #7B5A19;  
+}
+.tool_button{
+    margin: 5px;
+    margin-bottom: 0;
+    border: none;
+    width: 40px;
+    height: 45px;
+    background-color: rgba(0, 0, 0, 0);
+    cursor: pointer; 
+}
+.edit{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+    margin-right: 10px;
+}
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.yellow1{
+    color: #FEC63D;
+    margin-bottom: 10px;
+}
+.material-icons.md-36.blue{
+    color: #8cc3c9;
+}
+.material-icons.red1{
+    color: #5B1A04;
+}
+
+.material-icons.md-36.yellow1:hover,.material-icons.red1:hover{
+    color: #8cc3c9;
+}
+.material-icons.md-36.yellow1:active{
+    color: #8cc3c9;
+}
+.show_button{
+    display: flex;
+    margin: 24px;
+    margin-bottom: 0;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 1.4em;
+    font-family: 'Advent Pro', cursive;
+    color: #5B1A04;
+    cursor: pointer;
+
+}
+.show_button:hover{
+    color: #FEC63D;
+}
+.show_button:active{
+    color: #FEC63D;
+}
+footer{
+    display: flex;
+    justify-content: space-between;
+    background-color: #EFEBE2;
+    margin-top: -128px;
+    width: 100%;
+    height: 128px;
+}
+.footer_info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.footername{
+    margin: 0;
+    background-color:  rgba(0, 0, 0, 0);
+    color: #C19D46;
+    font-size: 3em;
+    font-family: 'Arizonia', cursive;
+}
+.info{
+    font-family: 'Advent Pro', cursive;
+    color: rgb(141, 117, 69);
+    margin: 0;
+}
+.contact{
+    font-family: 'Advent Pro', cursive;
+    color: rgb(141, 117, 69);
+    margin: 0;
+}
+.date{
+    font-family: 'Advent Pro', cursive;
+    color: rgb(141, 117, 69);
+    margin: 0;
+}
+@media(max-width: 600px){
+    .photopost{
+        width: 315px;
+        margin: 35px;
+    }
+    .material-icons.md-36 { 
+        font-size: 20px; 
+    }
+    .tool_button{
+        margin: 0;
+    }
+    #home{
+        font-size: 20px;
+    }
+    .description{
+        font-size: 0.8em;
+        margin: 1px 0 0 5px;
+        width: 195px;
+    }
+    .hashtags{
+        font-size: 0.6em;
+    }
+    .ph_date{
+        font-size: 0.4em;
+    }
+    .edit{
+        margin-right: 5px;
+    }
+}
+@media(max-width: 500px){
+    .headername{
+        display: none;
+    }
+    #logo{
+        width: 102.6px;
+        height: 73.2px;
+    }
+    header{
+        width: 100%;
+        height: 90px;
+    }
+ .photopost{
+        width: 315px;
+        margin: 35px 0 35px 0;
+    }
+.signup_button,.username{
+    font-size: 0.8em;
+}
+}
