@@ -4,8 +4,10 @@ const LS = (function () {
     }
     return {
         init: function () {
-            localStorage.setItem("posts", arrayJS);
-            localStorage.setItem("id", "11");
+            if (localStorage.getItem("posts") === null) {
+                localStorage.setItem("posts", arrayJS);
+                localStorage.setItem("id", "11");
+            }    
         },
         getID: function () {
             let newID = JSON.parse(localStorage.getItem("id")) + 1;
@@ -39,3 +41,4 @@ const LS = (function () {
         }
     }
 })();
+LS.init();
