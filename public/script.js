@@ -1,5 +1,5 @@
 
-let module = (function () {
+const memoryModule = (function () {
     function compareDates(a, b) {
         return b.createdAt - a.createdAt;
     }
@@ -8,8 +8,6 @@ let module = (function () {
             if (photoPost.id === '' || typeof photoPost.id !== 'string')
                 return false;
             if (photoPost.description === '' || typeof photoPost.description !== 'string' || photoPost.description.length > 200)
-                return false;
-            if (!(photoPost.createdAt instanceof Date))
                 return false;
             if (photoPost.author === '' || typeof photoPost.author !== 'string')
                 return false;
@@ -20,12 +18,12 @@ let module = (function () {
             else return true;
         },
         addPhotoPost: function (photoPost) {
-            let photoPosts = LS.getPostsFromLS();
-            if (module.validatePhotoPost(photoPost)) {
+            let photoPosts = this;
+            if (memoryModule.validatePhotoPost(photoPost)) {
                 if (photoPosts.every(function (element) {
                     return element.id !== photoPost.id;
                 })) {
-                    LS.pushPostInLS(photoPost);
+                    this.push(photoPost);
                     return true;
                 }
                 else return false;
@@ -33,14 +31,14 @@ let module = (function () {
             else return false;
         },
         getPhotoPost: function (someid) {
-            let photoPosts = LS.getPostsFromLS();
+            let photoPosts = this;
             return photoPosts.find(function (element) {
                 return element.id === someid;
             });
         },
 
         removePhotoPost: function (someid) {
-            let photoPosts = LS.getPostsFromLS();
+            let photoPosts = this;
 
             if (photoPosts.some(function (element) {
                 return element.id === someid;
@@ -48,20 +46,23 @@ let module = (function () {
                 photoPosts.splice(photoPosts.findIndex(function (element) {
                     return element.id === someid;
                 }), 1);
-                LS.savePostsInLS(photoPosts);
+
                 return true;
             }
             else return false;
         },
 
         editPhotoPost: function (someid, photoPost) {
-            let photoPosts = LS.getPostsFromLS();
-            if (photoPosts.some(function (element) {
+            let photoPosts = this;
+            console.log(someid);
+            if(photoPosts.some(function (element) {
                 return element.id === someid;
-            })) {
+            }))
+            {
                 let index = photoPosts.findIndex(function (element) {
                     return element.id === someid;
                 });
+                console.log(index);
                 let newPhPost = Object.assign({}, photoPosts[index]);
                 if (photoPost.hasOwnProperty('description')) {
                     newPhPost.description = photoPost.description;
@@ -76,7 +77,7 @@ let module = (function () {
                     if (newPhPost.likes.every(function (element) {
                         return element !== photoPost.likes;
                     })) {
-                        newPhPost.likes.push(photoPost.likes);
+                        newPhPost.likes =  photoPost.likes;
                     }
                     else {
                         newPhPost.likes.splice(newPhPost.likes.findIndex(function (element) {
@@ -84,12 +85,12 @@ let module = (function () {
                         }), 1)
                     }
                 }
-                if (this.validatePhotoPost(newPhPost)) {
+                console.log(newPhPost);
+                
+                if (memoryModule.validatePhotoPost(newPhPost)) {
                     photoPosts[index] = newPhPost;
-                    LS.savePostsInLS(photoPosts);
                     return true;
-                }
-                else return false;
+                } else return false;
             }
             else return false;
         },
@@ -97,7 +98,7 @@ let module = (function () {
             skip = skip || 0;
             top = top || 10;
 
-            let photoPosts = LS.getPostsFromLS();
+            let photoPosts = this;
 
             if (typeof skip === 'number' || typeof top === 'number' || typeof filterConfig === 'object') {
                 if (arguments.length < 3) {
@@ -152,3 +153,4 @@ let module = (function () {
     }
 }());
 
+module.exports = memoryModule;

@@ -198,10 +198,10 @@ let addingPageListeners = (someid) => {
             };
             if (validateAddingForm()) {
                 if (someid) {
-                    module.editPhotoPost(id, photopost);
+                    memoryModule.editPhotoPost(id, photopost);
                     reloadMain();
                 } else {
-                    module.addPhotoPost(photopost);
+                    memoryModule.addPhotoPost(photopost);
                     reloadMain();
                 }
             }

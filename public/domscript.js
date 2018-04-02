@@ -8,7 +8,7 @@ const moduledom = (function () {
         currentPostAmount: currPostAmount,
         user: username,
         createPhotopost: function (post, first) {
-            if (module.validatePhotoPost(post)) {
+            if (memoryModule.validatePhotoPost(post)) {
                 let photopost = document.createElement('div');
                 photopost.className = 'photopost';
                 photopost.id = post.id;
@@ -256,7 +256,7 @@ const moduledom = (function () {
             }
         },
         removePhotopost: function (someid) {
-            if (module.removePhotoPost(someid)) {
+            if (memoryModule.removePhotoPost(someid)) {
                 this.deletePhotopost(someid);
                 this.loadPhotoposts(this.currentPostAmount, 1);
                 this.currentPostAmount++;
@@ -267,7 +267,7 @@ const moduledom = (function () {
 
         editPhotopost: function (someid, photoPost) {
             let photoPosts = LS.getPostsFromLS();
-            if (module.editPhotoPost(someid, photoPost)) {
+            if (memoryModule.editPhotoPost(someid, photoPost)) {
                 let index = photoPosts.findIndex(function (element) {
                     return element.id === someid;
                 });
@@ -277,7 +277,7 @@ const moduledom = (function () {
         },
 
         addPhotopost: function (photoPost) {
-            if (module.addPhotoPost(photoPost)) {
+            if (memoryModule.addPhotoPost(photoPost)) {
                 this.createPhotopost(photoPost, true);
                 return true;
             }
@@ -285,7 +285,7 @@ const moduledom = (function () {
         },
 
         loadPhotoposts: function (skip, top, filterConfig) {
-            let filtered = module.getPhotoPosts(skip, top, filterConfig);
+            let filtered = memoryModule.getPhotoPosts(skip, top, filterConfig);
             let photoPosts = LS.getPostsFromLS();
             if (filtered) {
                 if (arguments.length < 3) {
