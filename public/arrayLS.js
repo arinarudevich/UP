@@ -26,7 +26,7 @@ const LS = (function () {
             let poststring = JSON.stringify(posts);
             localStorage.setItem("posts", poststring);
         },
-        getPostsFromLS: function () {
+        getPostsFromData: function () {
             let posts = JSON.parse(localStorage.getItem("posts"));
             if (posts) {
                 posts.forEach(element => {
@@ -38,7 +38,7 @@ const LS = (function () {
         savePostsInLS: function (posts) {
             let poststring = JSON.stringify(posts);
             localStorage.setItem("posts", poststring);
-        }
+        }        
     }
 })();
 LS.init();

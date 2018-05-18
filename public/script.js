@@ -1,4 +1,3 @@
-
 const memoryModule = (function () {
     function compareDates(a, b) {
         return b.createdAt - a.createdAt;
@@ -9,6 +8,9 @@ const memoryModule = (function () {
                 return false;
             if (photoPost.description === '' || typeof photoPost.description !== 'string' || photoPost.description.length > 200)
                 return false;
+            if (!photoPost.createdAt instanceof Date) {
+                return false;
+            }
             if (photoPost.author === '' || typeof photoPost.author !== 'string')
                 return false;
             if (photoPost.photoLink === '' || typeof photoPost.photoLink !== 'string')
@@ -54,7 +56,8 @@ const memoryModule = (function () {
 
         editPhotoPost: function (someid, photoPost) {
             let photoPosts = this;
-            console.log(someid);
+            photoPosts.createdAt = new Date();
+
             if(photoPosts.some(function (element) {
                 return element.id === someid;
             }))
@@ -62,7 +65,6 @@ const memoryModule = (function () {
                 let index = photoPosts.findIndex(function (element) {
                     return element.id === someid;
                 });
-                console.log(index);
                 let newPhPost = Object.assign({}, photoPosts[index]);
                 if (photoPost.hasOwnProperty('description')) {
                     newPhPost.description = photoPost.description;
@@ -85,7 +87,6 @@ const memoryModule = (function () {
                         }), 1)
                     }
                 }
-                console.log(newPhPost);
                 
                 if (memoryModule.validatePhotoPost(newPhPost)) {
                     photoPosts[index] = newPhPost;

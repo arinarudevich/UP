@@ -1,4 +1,3 @@
-
 const moduledom = (function () {
     let username = JSON.parse(localStorage.getItem("user")) || null;
 
@@ -8,7 +7,7 @@ const moduledom = (function () {
         currentPostAmount: currPostAmount,
         user: username,
         createPhotopost: function (post, first) {
-            if (memoryModule.validatePhotoPost(post)) {
+                post.createdAt = new Date(post.createdAt);
                 let photopost = document.createElement('div');
                 photopost.className = 'photopost';
                 photopost.id = post.id;
@@ -46,7 +45,7 @@ const moduledom = (function () {
                 favorite.className = 'tool_button';
                 favorite.setAttribute('data-action', 'like');
 
-                this.toLike(post.id, favorite);
+               // this.toLike(post.id, favorite);
                 photopost.childNodes[2].appendChild(favorite);
 
                 let ph_info = document.createElement('div');
@@ -95,34 +94,25 @@ const moduledom = (function () {
                 }
                 toolbar.childNodes[2].appendChild(deleteButton);
                 this.currentPostAmount++;
-            }
-            else {
-                console.log('Invalid arguments.');
-            }
         },
-        toLike: function (someid, favorite) {
-            let photoPosts = LS.getPostsFromLS();
-            let index = photoPosts.findIndex(function (element) {
-                return element.id === someid;
-            });
+        toLike: function (post, favorite) {
             if (typeof moduledom.user === 'string' && moduledom.user !== null) {
-                if (photoPosts[index].likes.every(function (element) {
+                if (post.likes.every(function (element) {
                     return element !== moduledom.user;
                 })) {
                     favorite.innerHTML = '<i class="material-icons md-36 yellow1">favorite_border</i>';
-                    favorite.title = photoPosts[index].likes;
+                    favorite.title = post.likes;
                 }
                 else {
                     favorite.innerHTML = '<i class="material-icons md-36 blue">favorite</i>';
-                    favorite.title = photoPosts[index].likes;
-
+                    favorite.title = post.likes;
                 }
                 return true;
 
             } else {
                 favorite.innerHTML = '<i class="material-icons md-36 yellow1">favorite_border</i>';
                 favorite.setAttribute("disabled", true);
-                favorite.title = photoPosts[index].likes;
+                favorite.title = post.likes;
             }
         },
         deletePhotopost: function (someid) {
@@ -256,7 +246,7 @@ const moduledom = (function () {
             }
         },
         removePhotopost: function (someid) {
-            if (memoryModule.removePhotoPost(someid)) {
+            if (memory.removePhotoPost(someid)) {
                 this.deletePhotopost(someid);
                 this.loadPhotoposts(this.currentPostAmount, 1);
                 this.currentPostAmount++;
@@ -267,7 +257,7 @@ const moduledom = (function () {
 
         editPhotopost: function (someid, photoPost) {
             let photoPosts = LS.getPostsFromLS();
-            if (memoryModule.editPhotoPost(someid, photoPost)) {
+            if (memory.editPhotoPost(someid, photoPost)) {
                 let index = photoPosts.findIndex(function (element) {
                     return element.id === someid;
                 });
@@ -277,43 +267,34 @@ const moduledom = (function () {
         },
 
         addPhotopost: function (photoPost) {
-            if (memoryModule.addPhotoPost(photoPost)) {
+            if (memory.addPhotoPost(photoPost)) {
                 this.createPhotopost(photoPost, true);
                 return true;
             }
             else return false;
         },
 
-        loadPhotoposts: function (skip, top, filterConfig) {
-            let filtered = memoryModule.getPhotoPosts(skip, top, filterConfig);
-            let photoPosts = LS.getPostsFromLS();
-            if (filtered) {
-                if (arguments.length < 3) {
-                    photoPosts.forEach(function (item) {
-                        if (filtered.some(function (element) {
-                            return element.id === item.id;
-                        })) {
-                            moduledom.createPhotopost(item);
-                        }
-
-                    });
+        loadPhotoposts: function (skip, top, photoPosts, filter) {
+            if (arguments.length < 4) {
+                photoPosts.forEach(function (item) {
+                    moduledom.createPhotopost(item);
                 }
-                else {
-                    photoPosts.forEach(function (item) {
-                        moduledom.deletePhotopost(item.id);
-                    });
-                    filtered.forEach(function (item) {
-                        moduledom.createPhotopost(item);
-                    });
-                }
-                if (moduledom.currentPostAmount === photoPosts.length) {
-                    let showButton = document.getElementById('show');
-                    showButton.innerHTML = "";
-                }
-                return true;
+                );
             }
-            else return false;
-
+            else {
+        //change for filter add listener
+                photoPosts.forEach(function (item) {
+                    moduledom.deletePhotopost(item.id);
+                });
+                filtered.forEach(function (item) {
+                    moduledom.createPhotopost(item);
+                });
+            }
+            if (moduledom.currentPostAmount === photoPosts.length) {
+                let showButton = document.getElementById('show');
+                showButton.innerHTML = "";
+            }
+            return true;
         },
         clearMain: function () {
             let main = document.getElementsByTagName("main")[0];
@@ -323,4 +304,4 @@ const moduledom = (function () {
     }
 })();
 moduledom.dependOnUser(moduledom.user);
-moduledom.loadPhotoposts(0, 10);
+//moduledom.loadPhotoposts(0, 10);

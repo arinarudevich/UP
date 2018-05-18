@@ -13,10 +13,12 @@ function mainListeners() {
     let filterEraseButton = document.getElementsByClassName("filter_button")[1];
 
     homeButton.addEventListener("click", reloadMain);
+
     filterEraseButton.addEventListener("click", (e) => {
         reloadMain();
         e.preventDefault();
-    })
+    });
+
     filterButton.addEventListener("click", (e) => {
         let msg = document.getElementById("message");
         if (msg) {
@@ -27,7 +29,7 @@ function mainListeners() {
         let date = search.elements.dateFilter.value || null;
         let hashFilter = search.elements.hashFilter.value || null;
         let dateFilter = (date) ? new Date(date) : null;
-
+//change filter
         if (dateFilter || nameFilter || hashFilter) {
             moduledom.loadPhotoposts(0, JSON.parse(localStorage.getItem("posts")).length, {
                 author: nameFilter,
@@ -46,8 +48,10 @@ function mainListeners() {
 
     addDependButt();
 
-    showButton.addEventListener("click", showMore);
-
+    showButton.addEventListener("click", () => {
+        contr.sendRequest('GET', 'allPosts', showMore);
+    });
+    
     function tool() {
         let elem = event.target;
         if (elem && elem.closest(".photopost")) {
@@ -106,8 +110,8 @@ function mainListeners() {
             });
         }
     }
-    function showMore() {
-        moduledom.loadPhotoposts(moduledom.currentPostAmount, 10);
+    function showMore(data) {
+        moduledom.loadPhotoposts(moduledom.currentPostAmount, 10, data);
     }
     function loadFilterMsg() {
         let message = document.createElement('div');

@@ -31,6 +31,17 @@ app.get('/getPost/:id', (req, res) => {
     post ? res.send(post) : res.status(404).end();
 });
 
+app.get('/allPosts', (req, res) => {
+    let posts = JSON.parse(fs.readFileSync("server/posts.json"));
+    posts.get = memory.getPhotoPosts;
+    let allPosts = posts.get(0,10);
+    if (allPosts) {
+        res.send(posts);
+    } else {
+        res.status(404).end();
+    }    
+});
+
 app.delete('/delPost/:id', (req, res) => {
     let posts = JSON.parse(fs.readFileSync("server/posts.json"));
     posts.del = memory.removePhotoPost;
@@ -45,10 +56,9 @@ app.delete('/delPost/:id', (req, res) => {
 });
 
 app.put('/editPost/:id', (req, res) => {
-    let posts = JSON.parse(fs.readFileSync("server/posts.json"));
+    let posts = SON.parse(fs.readFileSync("server/posts.json"));
     posts.edit = memory.editPhotoPost;
     let post = req.body;
-    console.log(post.createdAt);
 
     post.createdAt = new Date();
     let id = JSON.stringify(req.params.id);
@@ -64,11 +74,16 @@ app.put('/editPost/:id', (req, res) => {
 
 });
 
-app.use((req, res) => {
-    res.sendFile('error.html', { root: 'public' });
-});
+//app.use((req, res) => {
+   
+    //res.sendFile('error.html', { root: 'public' });
+   // res.send('lala');
+//});
 
-
+app.use(function (err, req, res, next) {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+})
 app.listen(3000, () => {
     console.log('Server is running...');
 });
